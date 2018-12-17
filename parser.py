@@ -44,10 +44,10 @@ def term():
 
 
 def mulop():
-    if (token == "*"):
+    if (token1 == "*"):
         match("*")
 
-    elif (token == "/"):
+    elif (token1 == "/"):
         match("/")
 
 
@@ -71,7 +71,8 @@ def program():
 def stmt_seq():
     statment()
 
-#    while(token == "if"  or token == "repeat" or token == "assign" )        # lsa hn3dlha
+    while(token2 == "identifier\n" or token1 == "if"  or token1 == "repeat" or token1 == ":=" or token1 == "read" or token1 == "write"):        # lsa hn3dlha
+        statment()
 
 
 def statment():
@@ -85,7 +86,8 @@ def statment():
         write()
     elif (token2 == "identifier\n"):
         match("identifier")
-
+    elif (token1 == ":="):
+        match(":=")
     else:
         Error()
 
@@ -142,7 +144,8 @@ def write():
 
 
 def match(t):
-    global token1 ,token2
+    global token1
+    global token2
     if (token1 == t or token2 == t+"\n"):
         token1,token2 = next_token()
     else:
