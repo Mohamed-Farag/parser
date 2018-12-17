@@ -1,17 +1,24 @@
 from xml.etree import ElementTree as ET
 
-token = "start"    # global variable
+# important notes
+  #1) make txt file in E directory naming it (input to parser)
+
+
+
+
+token = "start"    # dah global variable
 
 
 def Error():            # al function dy al mfrood tw2f al brnamg w ttl3 error message
     print("Error")
 
 
-def read-stmt():
+def read_stmt():
     match("read")
     match("identifier")
 
-def if-stmt():
+def if_stmt():
+    global token
     match("if")
     exp()
     match("then")
@@ -19,7 +26,7 @@ def if-stmt():
     if (token == "end"):
         match("end")
 
-    else if (token == "else"):
+    elif (token == "else"):
         match("else")
         stmt_seq()
         match("end")
@@ -31,7 +38,7 @@ def term():
         mulop()
         factor()
 
-    else if (token == "factor"):
+    elif (token == "factor"):
         factor()
 
 
@@ -39,20 +46,24 @@ def mulop():
     if (token == "*"):
         match("*")
 
-    else if (token == "/"):
+    elif (token == "/"):
         match("/")
 
 
 def factor():
+    global token
     if (token == "("):
         match("(")
         exp()
         match(")")
 
-    else if (token == "number")
-    match("number")
+    elif (token == "number"):
+        match("number")
 
-    else if (token == "identifier")
+
+
+    elif (token == "identifier"):
+        match("identifier")
 
 
 def program():
