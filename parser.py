@@ -6,39 +6,40 @@ from xml.etree import ElementTree as ET
 
 
 
-token = "start"    # dah global variable
+token1 = "start"    # dah global variable
+token2 = "start"    # dah global variable
 
 
 def Error():            # al function dy al mfrood tw2f al brnamg w ttl3 error message
-    print("Error")
+    print("Syntax Error")
 
 
 def read_stmt():
-    match("read")
-    match("identifier")
+    match("read")       # token1
+    match("identifier") # token2
 
 def if_stmt():
-    global token
+    global token1
     match("if")
     exp()
     match("then")
     stmt_seq()
-    if (token == "end"):
+    if (token1 == "end"):
         match("end")
 
-    elif (token == "else"):
+    elif (token1 == "else"):
         match("else")
         stmt_seq()
         match("end")
 
 
 def term():
-    if (token == "term"):
+    if (token1 == "term"):
         term()
         mulop()
         factor()
 
-    elif (token == "factor"):
+    elif (token1 == "factor"):
         factor()
 
 
@@ -51,18 +52,16 @@ def mulop():
 
 
 def factor():
-    global token
-    if (token == "("):
+    global token1
+    if (token1 == "("):
         match("(")
         exp()
         match(")")
 
-    elif (token == "number"):
-        match("number")
+    elif (token2 == "Number"):
+        match("Number")
 
-
-
-    elif (token == "identifier"):
+    elif (token2 == "identifier"):
         match("identifier")
 
 
@@ -76,16 +75,17 @@ def stmt_seq():
 
 
 def statment():
-    if(token == "if"):
+    if(token1 == "if"):
         IF()
-    elif (token == "repeat"):
+    elif (token1 == "repeat"):
         repeat()
-    elif (token == "assign"):
-        assgin()
-    elif (token == "read"):
+    elif (token1 == "read"):
         read()
-    elif (token == "write"):
+    elif (token1 == "write"):
         write()
+    elif (token2 == "identifier\n"):
+        match("identifier")
+
     else:
         Error()
 
@@ -96,36 +96,36 @@ def IF():
 
 def exp():
     simple_exp()
-    while(token == "<" or token == ">" or token == "="):
+    while(token1 == "<" or token1 == ">" or token1 == "="):
         comparison_exp()
         simple_exp()
 
 def comparison_exp():
-    if (token == "<"):
+    if (token1 == "<"):
         match("<")
-    elif (token == ">"):
+    elif (token1 == ">"):
         match(">")
-    elif (token == "="):
+    elif (token1 == "="):
         match("=")
     else:
         Error()
 
 def assign_stmt():
-    is_identifier()
+    match("identifier")
     match(":=")
     exp()
 
 
 def simple_exp():
     term()
-    while(token == "+" or token == "-"):
+    while(token1 == "+" or token1 == "-"):
         addop()
         term()
 
 def addop():
-    if(token == "+"):
+    if(token1 == "+"):
         match("+")
-    elif (token == "-"):
+    elif (token1 == "-"):
         match("-")
 
 
@@ -142,10 +142,17 @@ def write():
 
 
 def match(t):
-    global token
-    if (token == t):
-        token = next_token()
+    global token1 ,token2
+    if (token1 == t or token2 == t+"\n"):
+        token1,token2 = next_token()
     else:
+        Error()
+
+
+def is_number(t):
+    try:
+        val = int(t)
+    except ValueError:
         Error()
 
 
@@ -153,8 +160,7 @@ def match(t):
 def next_token():        # this function is used to get the next token in the input to parser file
     t = f.readline()
     index = t.find(",")
-    return t[:index]
-
+    return t[:index],t[index+1:]
 
 
 
@@ -166,9 +172,10 @@ def next_token():        # this function is used to get the next token in the in
 if __name__ == '__main__':
 
 
+
     f = open("E:\input to parser.txt", "r")
-    token = next_token()
-    print(token)
+    token1,token2 = next_token()
+    #print(token1,token2)
     program()
 
 
