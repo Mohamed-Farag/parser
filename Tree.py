@@ -37,12 +37,15 @@ class Tree:
         self.G.add_edge(first_node,Second_node)
     def newDuplicateNode(self):
         self.nodeId+=1
-    def Draw(self):
-        self.G.layout()
-        self.G.draw('/media/megawer/My Data/python/ParseTree.png')
+    def Draw(self,path):
+        self.G.layout(prog='dot')
+        self.G.draw(path+'/ParseTree.png')
 
-'''
+
+
 ########## test ##################################
+'''
+path='/media/megawer/My Data/python/parser'
 tree=Tree()
 tree.Add_node('assign x',1,0)
 tree.Add_node('assign y',1,0)
@@ -98,6 +101,6 @@ tree.Add_edge(plus3opid,'op -')
 tree.Add_edge('op -',node2xid)
 tree.Add_edge('op -',node2yid)
 
-tree.Draw()
-####### test ################
+tree.Draw(path)
 '''
+####### test ################
