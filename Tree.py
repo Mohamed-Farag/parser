@@ -37,9 +37,9 @@ class Tree:
         self.G.add_edge(first_node,Second_node)
     def newDuplicateNode(self):
         self.nodeId+=1
-    def Draw(self):
+    def Draw(self,path):
         self.G.layout()
-        self.G.draw('/media/megawer/My Data/python/ParseTree.png')
+        self.G.draw(path+'/ParseTree.png')
 
 '''
 ########## test ##################################
