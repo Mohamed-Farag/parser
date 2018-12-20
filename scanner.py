@@ -1,6 +1,7 @@
 import re
 from tkinter import *
-from parser2 import *
+from parser import *
+path='/media/megawer/My Data/python/parser'
 def tsplit(string, delimiters):
     """Behaves str.split but supports multiple delimiters."""
 
@@ -34,7 +35,7 @@ def scan():
 
     lines_as_string = lines_as_string.replace( "?" , " := ")
 
-    '''            
+    '''
     for j in list_signs_two_char:
         if j in list_signs_two_char:
             lines_as_string = lines_as_string.replace(j, " " + j + " ")
@@ -57,19 +58,19 @@ def scan():
     lines_as_list =paragraph.split()
     Numbers = re.findall(r'\d{1,10000}', lines_as_string)
     identifier = re.findall(r'[A-Za-z][A-Za-z0-9_]*', lines_as_string)
-    
-    fw =open("E:\output.txt",'w')
+
+    fw =open(path+"/input to parser.txt",'w')
     flag = True
     for i in lines_as_list:
         #print(i,type(i))
         thisline = tsplit(i, (' ', '\n',))
-    
+
         for j in thisline:
             if j == '{':                          # to ignore comments
                 flag = False
             if j == '}':
                 flag = True
-    
+
             if flag == True:
                 if j in Numbers:
                     fw.write(j + "," + "Number" +'\n')
@@ -102,5 +103,3 @@ parse_button=Button(text="parse",width=10,heigh=3,fg='red',bd=7,command=main).pl
 input= Text(window,width=40)
 input.place(x=5,y=5)
 window.mainloop()
-
-

@@ -1,5 +1,7 @@
 from Tree import *
 
+from tkinter import *
+
 #temp = parseTree.Add_node("const" + "\n" + "  (" + token1 + ")", "cir")
 #parseTree.Add_edge(parent, left_child)   # connecting parent to left_child
 #parseTree.Add_edge(parent, right_child)  # connecting parent to right_child
@@ -10,7 +12,7 @@ token1 = ''    # dah global variable
 token2 = ''    # dah global variable
 parseTree=Tree()
 path='/media/megawer/My Data/python/parser'
-
+f=open(path+"/input to parser.txt", "r")
 def program():
     stmt_seq()
 
@@ -144,6 +146,7 @@ def comparison_op():
         match("=")
     else:
         Error()
+        print("comparison_op")
 
     temp = parseTree.Add_node("op" + "\n" + " (" + token1_temp + ")", "cir")     # parent
     #parseTree.Add_edge(temp, child_ID)                                       # connecting parent to child
@@ -243,6 +246,7 @@ def match(t):
 
     else:
         Error()
+        print(token1,token2)
     #return temp
 
 def is_number(t):
@@ -254,6 +258,7 @@ def is_number(t):
 
 
 def next_token():        # this function is used to get the next token in the input to parser file
+    global f
     t = f.readline()
     index = t.find(',')
     t1 = t[:index]
@@ -264,12 +269,19 @@ def next_token():        # this function is used to get the next token in the in
 def Error():  # al function dy al mfrood tw2f al brnamg w ttl3 error message
     print("Syntax Error")
 
+def main():                                                       #if __name__ == '__main__':
 
-if __name__ == '__main__':
-
-    f = open(path+"/input to parser.txt", "r")
+    global token1
+    global token2
     token1,token2 = next_token()
     #print(token1,token2)
     program()
 
     parseTree.Draw(path)
+    root= Toplevel()
+    #root.geometry('800x500')
+    root.title('Syntax_Tree')
+    Syntax_Tree = PhotoImage(file=path+"/ParseTree.png")
+    label = Label(root, image=Syntax_Tree)
+    label.pack()
+    root.mainloop()
