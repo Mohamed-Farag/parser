@@ -6,42 +6,50 @@ from Tree import *
 # important notes
   #1) make txt file in E directory naming it (input to parser)
 
-token1 = "start"    # dah global variable
-token2 = "start"    # dah global variable
+token1 = ''    # dah global variable
+token2 = ''    # dah global variable
 parseTree=Tree()
+path='/media/megawer/My Data/python/parser'
 
 def program():
     stmt_seq()
 
 def stmt_seq():
-    child = statment()        # first if{   # second if{}   NOW , child is the second if 
-
-    while(token1 == ";"):
-        match(";")
-        nodeOfSameLevel = statment()
-        #parseTree.Add_edge(child, nodeOfSameLevel)   # Horizontal line
-
+    node1 = statment()        # first if{   # second if{}   NOW , child is the second if
+    horizontal_node1 = node1
+    #print(token1)
+    while(token1 == ';'):
+        match(';')
+        horizontal_node2 = statment()
+        parseTree.connectHorizotal(horizontal_node1, horizontal_node2)   # Horizontal line
+        horizontal_node1 = horizontal_node2
+    return node1
     # connect statements of the same level
 
 def statment():
     child = 0
+    global token1
+    #print(token1)
     if(token1 == "if"):
         child = if_stmt()
     elif (token1 == "repeat"):
         child = repeat()
-    elif (token1 == "read"):
+    elif (token1 == 'read'):
+    #    print(token1+"r")
         child = read_stmt()
     elif (token1 == "write"):
         child = write()
     else:
+        #print(token1)
         child = assign_stmt()
 
     return child
 
 def if_stmt():
     global token1
-    match("if")
     parent_if = parseTree.Add_node(token1, "rec")
+    match("if")
+
 
     first_child =exp()
     match("then")
@@ -57,62 +65,77 @@ def if_stmt():
         match("else")
         third_child = stmt_seq()
         match("end")
-    parseTree.Add_edge(parent_if, third_child)  # connecting parent to left_child
+        parseTree.Add_edge(parent_if, third_child)  # connecting parent to left_child
 
     return parent_if
 
 def repeat():
+    token_temp = token1
     match("repeat")
-    parent_repeat = parseTree.Add_node(token1, "rec")
+    parent_repeat = parseTree.Add_node(token_temp, "rec")
     left_child = stmt_seq()
     match("until")
     right_child = exp()
-    
+
     parseTree.Add_edge(parent_repeat, left_child)   # connecting parent to left_child
     parseTree.Add_edge(parent_repeat, right_child)  # connecting parent to right_child
-    
+
     return parent_repeat
- 
+
 def assign_stmt():
     global token1
+#need to revise this function
     t_assign = token1
     match("identifier")
+
     match(":=")
     child = exp()
 
-    parent = parseTree.Add_node("assign" + "\n" + "  (" + t_assign + ")", "rec")
+    parent = parseTree.Add_node("assign" + "\n" + " (" + t_assign + ")", "rec")
     parseTree.Add_edge(parent, child)  # connecting parent to left_child
 
     return parent
 
 def read_stmt():
-    match("read")
-    parent_read = parseTree.Add_node(token1, "rec")
-    match("identifier")
+    token_temp = token1
+    match('read')
+    parent_read = parseTree.Add_node(token_temp + "\n" +"("+token1+")", 'rec')
+    match('identifier')
+    #parseTree.Add_edge(parent_read, parent_idetifier)
+    return parent_read
 
 
 def write():
+    token_temp = token1
     match("write")
-    parent_write = parseTree.Add_node(token1, "rec")
+    parent_write = parseTree.Add_node(token_temp, "rec")
     child = exp()
     parseTree.Add_edge(parent_write, child)  # connecting parent to left_child
-
+    return parent_write
 def exp():
+    # here is a logic error this function dosen't handle the case assign fact := 1;
     #temp = Tree()
     #new_temp = Tree()
-    left_child = simple_exp()       #create(node) const 0
+    left_child = simple_exp()   # x
+    parent=0
+    flag=0
     while(token1 == "<" or token1 == ">" or token1 == "="):
-        parent = comparison_op()   #create (node) op <
-        right_child = simple_exp() # (node) id x
+        flag=1
+        parent = comparison_op()   # =
+        right_child = simple_exp()
 
         parseTree.Add_edge(parent, left_child)          # connecting parent to left_child
         parseTree.Add_edge(parent, right_child)         # connecting parent to right_child
         left_child = parent
 
+    if(flag==0):
+        return left_child
     return parent
 
 
 def comparison_op():
+    # here is a logic error this function dosen't handle the case assign fact := 1;
+    token1_temp=token1
     if (token1 == "<"):
         match("<")
     elif (token1 == ">"):
@@ -122,7 +145,7 @@ def comparison_op():
     else:
         Error()
 
-    temp = parseTree.Add_node("op" + "\n" + "  (" + token1 + ")", "cir")     # parent
+    temp = parseTree.Add_node("op" + "\n" + " (" + token1_temp + ")", "cir")     # parent
     #parseTree.Add_edge(temp, child_ID)                                       # connecting parent to child
     return temp
 
@@ -130,23 +153,28 @@ def simple_exp():
     #temp = Tree()
     #new_temp = Tree()
     left_child = term()      # 8 # -
+    parent=0
+    flag=0
     while(token1 == "+" or token1 == "-"):
+        flag=1
         parent = addop()        # -   # +
         right_child = term()    # 6   # *
         parseTree.Add_edge(parent, left_child)          # connecting parent to left_child
         parseTree.Add_edge(parent, right_child)         # connecting parent to right_child
         left_child = parent
+    if(flag==0):
+        return left_child
+    return parent
 
-        return parent
 
 def addop():
-    #temp = Tree()
+    token_temp = token1
     if(token1 == "+"):
         temp = match("+")
     elif (token1 == "-"):
         temp = match("-")
 
-    temp=parseTree.Add_node("op" + "\n" + "  (" + token1 + ")" , "cir")
+    temp=parseTree.Add_node("op" + "\n" + " (" + token_temp + ")" , "cir")
 
     return temp
 
@@ -154,23 +182,27 @@ def term():
     #temp = Tree()
     #new_temp = Tree()
     left_child = factor()      # 11
+    flag=0
+    parent=0
     while (token1 == "*" or token1 == "/"):
-     parent = mulop()          # *
-     right_child = factor()    # 5
-     parseTree.Add_edge(parent, left_child)   # connecting parent to left_child
-     parseTree.Add_edge(parent, right_child)  # connecting parent to right_child
-     left_child = parent
-     return parent
+        flag=1
+        parent = mulop()          # *
+        right_child = factor()    # 5
+        parseTree.Add_edge(parent, left_child)   # connecting parent to left_child
+        parseTree.Add_edge(parent, right_child)  # connecting parent to right_child
+        left_child = parent
+    if(flag==0):
+        return left_child
+    return parent
 
 def mulop():
-    temp = Tree()
+    token1_temp=token1
     if (token1 == "*"):
-        temp = match("*")
-
+        match("*")
     elif (token1 == "/"):
-        temp = match("/")
+        match("/")
 
-    temp = parseTree.Add_node("op" + "\n" + "  (" + token1 + ")", "cir")
+    temp = parseTree.Add_node("op" + "\n" + " (" + token1_temp + ")", "cir")
 
     return temp
 
@@ -178,18 +210,21 @@ def factor():
     #temp = Tree()
     global token1
     global token2
+    temp=0
     if (token1 == "("):
         match("(")
-        exp()
+        temp = exp()
         match(")")
 
     elif (token2 == "Number"):
+         temp = parseTree.Add_node("const" + "\n" + " (" + token1 + ")" , "cir")
          match("Number")
-         temp = parseTree.Add_node("const" + "\n" + "  (" + token1 + ")" , "cir")
+
 
     elif (token2 == "identifier"):
+        temp = parseTree.Add_node("id" + "\n" + " (" + token1 + ")", "cir")
         match("identifier")
-        temp = parseTree.Add_node("id" + "\n" + "  (" + token1 + ")", "cir")
+
 
     return temp
 
@@ -199,10 +234,13 @@ def factor():
 def match(t):
     global token1
     global token2
+    #print(token1)
+    #print(token2)
     #temp = Tree()
-    if (token1 == t or token2 == t):
-        #temp.Add_node(t, cir)
+    if (token1 == t or token2 == t) :
+        print('ok  '+token1)
         token1,token2 = next_token()
+
     else:
         Error()
     #return temp
@@ -217,7 +255,7 @@ def is_number(t):
 
 def next_token():        # this function is used to get the next token in the input to parser file
     t = f.readline()
-    index = t.find(",")
+    index = t.find(',')
     t1 = t[:index]
     t2 = t[index+1:].strip()
     return t1,t2
@@ -229,9 +267,9 @@ def Error():  # al function dy al mfrood tw2f al brnamg w ttl3 error message
 
 if __name__ == '__main__':
 
-    f = open("E:\input to parser.txt", "r")
+    f = open(path+"/input to parser.txt", "r")
     token1,token2 = next_token()
     #print(token1,token2)
     program()
-    parseTree.Draw()
 
+    parseTree.Draw(path)
