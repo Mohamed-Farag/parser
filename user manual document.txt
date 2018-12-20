@@ -1,0 +1,5 @@
+1) Open Parser.exe
+2) Enter the code in the textbox in the GUI
+3) press scan 
+4) press parse
+5) The Syntax tree will successfully open :D 
