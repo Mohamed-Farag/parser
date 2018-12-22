@@ -3,3 +3,5 @@
 3) press scan 
 4) press parse
 5) The Syntax tree will successfully open :D 
+6) To try another example .. close the program
+   and run it again :D 
