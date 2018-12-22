@@ -1,1 +1,1 @@
-# scanner + parser with GUI
+# Scanner + Parser with GUI
