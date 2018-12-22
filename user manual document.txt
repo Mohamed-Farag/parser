@@ -1,7 +1,29 @@
-1) Open Parser.exe
-2) Enter the code in the textbox in the GUI
-3) press scan 
-4) press parse
-5) The Syntax tree will successfully open :D 
-6) To try another example .. close the program
+Please do the following :
+
+1) use (((sudo apt install graphviz))) 
+To install the plotting library
+
+2) Before you run the program you need to go to the application 
+directory and open in terminal then execute the following 
+command (((chmod +x scanner))) to run it as a standalone application
+ 
+
+3) double click the app to run it
+
+4) Enter the code in the textbox in the GUI
+
+5) press scan
+ 
+6) press parse
+
+7) The Syntax tree will successfully open :D 
+
+8) To try another example .. close the program
    and run it again :D 
+
+
+
+Note :
+no 8 may be consieder as a bug 
+,but it just need to clear the file
+for the next example
